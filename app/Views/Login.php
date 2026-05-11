@@ -4,18 +4,10 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Corona Admin</title>
-    <!-- plugins:css -->
+    <title>Winning Money</title>
     <link rel="stylesheet" href="<?= base_url('assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
-    <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>">
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <!-- endinject -->
-    <!-- Layout styles -->
+    <link rel="stylesheet" href="<?= base_url('assets/vendors/css/vendor.bundle.base.css') ?>"> 
     <link rel="stylesheet" href="<?= base_url('assets/css/style.css') ?>">
-    <!-- End layout styles -->
     <link rel="shortcut icon" href="<?= base_url('assets/images/favicon.png') ?>" />
   </head>
   <body>
@@ -26,24 +18,22 @@
             <div class="card col-lg-4 mx-auto">
               <div class="card-body px-5 py-5">
                 <h3 class="card-title text-left mb-3">Login</h3>
+                <div class="alert alert-danger d-none" id="form_error_alert"></div>
                 <form>
                   <div class="form-group">
                     <label>Email *</label>
-                    <input type="email" class="form-control p_input">
+                    <input type="email" class="form-control p_input" id="email">
+                    <div class="error-message" id="email_error"></div>
                   </div>
                   <div class="form-group">
                     <label>Password *</label>
-                    <input type="password" class="form-control p_input">
-                  </div>
-                  <div class="form-group d-flex align-items-center justify-content-between">
-                    <div class="form-check">
-                      <label class="form-check-label">
-                        <input type="checkbox" class="form-check-input"> Remember me </label>
-                    </div>
+                    <input type="password" class="form-control p_input" id="password">
+                    <div class="error-message" id="password_error"></div>
                   </div>
                   <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-block enter-btn">Login</button>
+                    <button type="button" class="btn btn-primary btn-block enter-btn" id="login_btn">Login</button>
                   </div>
+                  <p class="sign-up text-center">Don't have an Account?<a href="<?= base_url('register') ?>"> Sign Up</a></p>
                   </form>
               </div>
             </div>
@@ -57,15 +47,130 @@
     <!-- container-scroller -->
     <!-- plugins:js -->
     <script src="<?= base_url('assets/vendors/js/vendor.bundle.base.js') ?>"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page -->
-    <!-- End plugin js for this page -->
-    <!-- inject:js -->
     <script src="<?= base_url('assets/js/off-canvas.js') ?>"></script>
     <script src="<?= base_url('assets/js/hoverable-collapse.js') ?>"></script>
     <script src="<?= base_url('assets/js/misc.js') ?>"></script>
     <script src="<?= base_url('assets/js/settings.js') ?>"></script>
     <script src="<?= base_url('assets/js/todolist.js') ?>"></script>
-    <!-- endinject -->
+    <script>
+      $(document).ready(function() {
+            function clearErrors() {
+                $('.error-message').text('');
+            }
+
+            function displayErrors(errors) {
+                if (!errors) {
+                    return;
+                }
+
+                Object.keys(errors).forEach(function(field) {
+                    $('#' + field + '_error').text(errors[field]);
+                });
+            }
+
+            function validateForm() {
+                clearErrors();
+                var email = $('#email').val().trim();
+                var password = $('#password').val();
+                var valid = true;
+                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;              
+                  
+                if (email === '') {
+                    $('#email_error').text('Email is required');
+                    valid = false;
+                } else if (!emailRegex.test(email)) {
+                    $('#email_error').text('Email is not valid');
+                    valid = false;
+                }
+
+                if (password === '') {
+                    $('#password_error').text('Password is required');
+                    valid = false;
+                } else if (password.length < 6) {
+                    $('#password_error').text('Password must be at least 6 characters');
+                    valid = false;
+                }
+
+                return valid;
+            }
+
+            $(' #email, #password').on('input change', function() {
+                $(this).closest('.form-group').find('.error-message').text('');
+            });
+
+            $('#login_btn').click(function(e) {
+                e.preventDefault();
+
+                if (!validateForm()) {
+                    return;
+                }
+
+                var params = {
+                    email: $('#email').val().trim(),
+                    password: $('#password').val(),
+                };
+
+                $.ajax({
+                  url: '<?= base_url('login/submit') ?>',
+                  type: 'POST',
+                  data: params,
+                  dataType: 'json',
+                  success: function(response) {
+                      if (response.Resp_code === 'RCS') {
+                          window.location.href = response.data.redirect_url;
+                      } else {
+                          clearErrors();
+
+                          if (response.data && typeof response.data === 'object') {
+                              displayErrors(response.data);
+                          }
+
+                          // Show general error message in alert box above the form
+                          if (response.Resp_desc) {
+                              $('#form_error_alert')
+                                  .removeClass('d-none')
+                                  .html(response.Resp_desc);
+                          } else {
+                              $('#form_error_alert')
+                                  .removeClass('d-none')
+                                  .html('Something went wrong. Please try again.');
+                          }
+
+                          // Scroll to the error alert
+                          $('html, body').animate({
+                              scrollTop: $('#form_error_alert').offset().top - 20
+                          }, 300);
+                      }
+                  },
+                  error: function(xhr) {
+                    clearErrors();
+
+                    var json = xhr.responseJSON;
+
+                    if (json) {
+                        // Display field-level validation errors
+                        if (json.data && typeof json.data === 'object') {
+                            displayErrors(json.data);
+                        }
+
+                        // Display general error alert
+                        $('#form_error_alert')
+                            .removeClass('d-none')
+                            .html(json.Resp_desc || 'An error occurred. Please try again.');
+                    } else {
+                        $('#form_error_alert')
+                            .removeClass('d-none')
+                            .html('An error occurred. Please try again.');
+                    }
+
+                    // Scroll to alert
+                    $('html, body').animate({
+                        scrollTop: $('#form_error_alert').offset().top - 20
+                    }, 300);
+                }
+              });
+            });
+        }); 
+    </script>
   </body>
 </html>

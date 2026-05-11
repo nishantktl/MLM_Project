@@ -53,6 +53,18 @@ if (! function_exists('session_get')) {
     }
 }
 
+if (! function_exists('session_data')) {
+    /**
+     * Get all session data.
+     *
+     * @return array<string,mixed>
+     */
+    function session_data(): array
+    {
+        return session()->get();
+    }
+}
+
 if (! function_exists('session_has')) {
     /**
      * Determine whether a session key exists.

@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Database\Migrations;
+
+use CodeIgniter\Database\Migration;
+
+class AddStatusToUsersTable extends Migration
+{
+    public function up()
+    {
+        $this->forge->addColumn('users', [
+            'status' => [
+                'type'    => 'ENUM',
+                'constraint' => ['ACTIVE', 'PENDING', 'BLOCKED'],
+                'default' => 'ACTIVE',
+            ],
+        ]);
+    }
+
+    public function down()
+    {
+        $this->forge->dropColumn('users', 'status');
+    }
+}
