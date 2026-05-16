@@ -126,27 +126,37 @@
                 <form id="register_form" method="post" novalidate>
                   <div class="form-group">
                     <label>Sponser ID</label>
-                    <input type="text" name="sponser_id" class="form-control p_input" id="sponser_id" placeholder="Enter Sponser ID" required>
+                    <input type="text" name="sponser_id" class="form-control p_input" id="sponser_id" placeholder="Enter Sponser ID" required
+                        style="background-color: #2A3038; color: #ffffff; opacity: 1;"
+                    >
                     <small class="error-message text-danger" id="sponser_id_error"></small>
                   </div>
                   <div class="form-group">
                     <label>Username</label>
-                    <input type="text" name="username" class="form-control p_input" id="username" placeholder="Enter username" required minlength="3" maxlength="100">
+                    <input type="text" name="username" class="form-control p_input" id="username" placeholder="Enter username" required minlength="3" maxlength="100"
+                        style="background-color: #2A3038; color: #ffffff; opacity: 1;"
+                    >
                     <small class="error-message text-danger" id="username_error"></small>
                   </div>
                   <div class="form-group">
                     <label>Phone</label>
-                    <input type="tel" name="phone" class="form-control p_input" id="phone" placeholder="Enter phone number" pattern="[0-9]{10}" required>
+                    <input type="tel" name="phone" class="form-control p_input" id="phone" placeholder="Enter phone number" pattern="[0-9]{10}" required
+                        style="background-color: #2A3038; color: #ffffff; opacity: 1;"
+                    >
                     <small class="error-message text-danger" id="phone_error"></small>
                   </div>
                   <div class="form-group">
                     <label>Email</label>
-                    <input type="email" name="email" class="form-control p_input" id="email" placeholder="Enter email" required>
+                    <input type="email" name="email" class="form-control p_input" id="email" placeholder="Enter email" required
+                        style="background-color: #2A3038; color: #ffffff; opacity: 1;"
+                    >
                     <small class="error-message text-danger" id="email_error"></small>
                   </div>
                   <div class="form-group">
                     <label>Password</label>
-                    <input type="password" name="password" class="form-control p_input" id="password" placeholder="Enter password" required minlength="6">
+                    <input type="password" name="password" class="form-control p_input" id="password" placeholder="Enter password" required minlength="6"
+                        style="background-color: #2A3038; color: #ffffff; opacity: 1;"
+                    >
                     <small class="error-message text-danger" id="password_error"></small>
                   </div>
                   <div class="text-center">

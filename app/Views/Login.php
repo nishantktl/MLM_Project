@@ -22,12 +22,16 @@
                 <form>
                   <div class="form-group">
                     <label>Email *</label>
-                    <input type="email" class="form-control p_input" id="email">
+                    <input type="email" class="form-control p_input" id="email"
+                        style="background-color: #2A3038; color: #ffffff; opacity: 1;"
+                    >
                     <div class="error-message" id="email_error"></div>
                   </div>
                   <div class="form-group">
                     <label>Password *</label>
-                    <input type="password" class="form-control p_input" id="password">
+                    <input type="password" class="form-control p_input" id="password"
+                        style="background-color: #2A3038; color: #ffffff; opacity: 1;"
+                    >
                     <div class="error-message" id="password_error"></div>
                   </div>
                   <div class="text-center">
