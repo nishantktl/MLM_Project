@@ -944,4 +944,28 @@ class User extends BaseController
     //         ]);
     //     }
     // }
+
+    public function direct_team_history(){
+        if (!session()->get('isLoggedIn') || session()->get('role') != 'user') {
+            redirect()->to('/login')->send();
+            exit;
+        }
+        
+        $user_id = session()->get('user_id');
+        $userdata = $this->userModel->getUserById($user_id);
+        if($userdata && $userdata['role'] == 'user'){
+
+            $data = [
+                'title' => 'Direct Team History'
+            ];
+
+            return view('layout/header', $data)
+            . view('user/direct_team')
+            . view('layout/footer');
+        } else {
+            session()->destroy();
+            return redirect()->to('/login');
+        }
+        
+    }
 }
