@@ -12,7 +12,7 @@ class Register extends BaseController
         return view('Register');
     }
 
-    public function submit()
+    public function user_signup()
     {
         $data = [
             'Resp_code' => 'ERR',
@@ -120,7 +120,7 @@ class Register extends BaseController
 
         $txnPin = str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
 
-        $hashedPassword = md5($password);
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         $userData = [
             'user_id' => $userId,
@@ -128,7 +128,8 @@ class Register extends BaseController
             'username' => $username,
             'phone' => $phone,
             'email' => $email,
-            'password' => $hashedPassword,
+            'hash_password' => $hashedPassword,
+            'password' => $password,
             'status' => 'PENDING',
             'txn_pin' => $txnPin,
             'created_by' => $sponser_id

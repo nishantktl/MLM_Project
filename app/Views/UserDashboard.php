@@ -61,89 +61,53 @@ $data = getuserdata();
             <span class="nav-link">Navigation</span>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="<?= base_url('admin/dashboard') ?>">
-              <span class="menu-icon">
-                <i class="mdi mdi-speedometer"></i>
-              </span>
+            <a class="nav-link" href="<?= base_url('dashboard') ?>">
+              <span class="menu-icon"><i class="mdi mdi-speedometer"></i></span>
               <span class="menu-title">Dashboard</span>
             </a>
           </li>
           <li class="nav-item menu-items">
             <a class="nav-link" data-toggle="collapse" href="#ui-basic" aria-expanded="false" aria-controls="ui-basic">
-              <span class="menu-icon">
-                <i class="mdi mdi-laptop"></i>
-              </span>
-              <span class="menu-title">User Management</span>
+              <span class="menu-icon"><i class="mdi mdi-laptop"></i></span>
+              <span class="menu-title">Manage Fund</span>
               <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="ui-basic">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="<?= base_url('admin/all_users') ?>">All Members</a></li>
-                <li class="nav-item"> <a class="nav-link" href="<?= base_url('admin/active_members') ?>">Active Members</a></li>
-                <li class="nav-item"> <a class="nav-link" href="<?= base_url('admin/pending_members') ?>">Pending Members</a></li>
-                <li class="nav-item"> <a class="nav-link" href="<?= base_url('admin/user_details') ?>">User Details</a></li>
-                <li class="nav-item"> <a class="nav-link" href="<?= base_url('admin/block_user') ?>">For Block User</a></li>
-                <li class="nav-item"> <a class="nav-link" href="<?= base_url('admin/datewise_active_members') ?>">Datewise Active Member List</a></li>
+                <li class="nav-item"> <a class="nav-link" href="<?= base_url('fund_request') ?>">Deposit Fund</a></li>
+                <li class="nav-item"> <a class="nav-link" href="<?= base_url('deposit_history') ?>">Deposit History</a></li>
+                <li class="nav-item"> <a class="nav-link" href="<?= base_url('p2p_transfer') ?>">P2P Transfer</a></li>
+                <li class="nav-item"> <a class="nav-link" href="<?= base_url('p2p_receive') ?>">P2P Receive</a></li>
+                <li class="nav-item"> <a class="nav-link" href="<?= base_url('income_to_purchase_wallet') ?>">Income To Purchase Wallet</a></li>
               </ul>
             </div>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="<?= base_url('pages/forms/basic_elements.html') ?>">
-              <span class="menu-icon">
-                <i class="mdi mdi-playlist-play"></i>
-              </span>
-              <span class="menu-title">Form Elements</span>
-            </a>
-          </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="<?= base_url('pages/tables/basic-table.html') ?>">
-              <span class="menu-icon">
-                <i class="mdi mdi-table-large"></i>
-              </span>
-              <span class="menu-title">Tables</span>
-            </a>
-          </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="<?= base_url('pages/charts/chartjs.html') ?>">
-              <span class="menu-icon">
-                <i class="mdi mdi-chart-bar"></i>
-              </span>
-              <span class="menu-title">Charts</span>
-            </a>
-          </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" href="<?= base_url('pages/icons/mdi.html') ?>">
-              <span class="menu-icon">
-                <i class="mdi mdi-contacts"></i>
-              </span>
-              <span class="menu-title">Icons</span>
-            </a>
-          </li>
-          <li class="nav-item menu-items">
-            <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
-              <span class="menu-icon">
-                <i class="mdi mdi-security"></i>
-              </span>
-              <span class="menu-title">User Pages</span>
+            <a class="nav-link" data-toggle="collapse" href="#trade" aria-expanded="false" aria-controls="trade">
+              <span class="menu-icon"><i class="mdi mdi-laptop"></i></span>
+              <span class="menu-title">User Trading</span>
               <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="auth">
+            <div class="collapse" id="trade">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="<?= base_url('pages/samples/blank-page.html') ?>"> Blank Page </a></li>
-                <li class="nav-item"> <a class="nav-link" href="<?= base_url('pages/samples/error-404.html') ?>"> 404 </a></li>
-                <li class="nav-item"> <a class="nav-link" href="<?= base_url('pages/samples/error-500.html') ?>"> 500 </a></li>
-                <li class="nav-item"> <a class="nav-link" href="<?= base_url('pages/samples/login.html') ?>"> Login </a></li>
-                <li class="nav-item"> <a class="nav-link" href="<?= base_url('pages/samples/register.html') ?>"> Register </a></li>
+                <li class="nav-item"> <a class="nav-link" href="<?= base_url('start_trade') ?>">Start Trade</a></li>
+                <li class="nav-item"> <a class="nav-link" href="<?= base_url('re_trade') ?>">Re-Trade</a></li>
+                <li class="nav-item"> <a class="nav-link" href="<?= base_url('trade_history') ?>">Trade History</a></li>
               </ul>
             </div>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="<?= base_url('http://www.bootstrapdash.com/demo/corona-free/jquery/documentation/documentation.html') ?>">
-              <span class="menu-icon">
-                <i class="mdi mdi-file-document-box"></i>
-              </span>
-              <span class="menu-title">Documentation</span>
+            <a class="nav-link" data-toggle="collapse" href="#withdraw_balance" aria-expanded="false" aria-controls="withdraw_balance">
+            <span class="menu-icon"><i class="mdi mdi-laptop"></i></span>
+            <span class="menu-title">Withdraw</span>
+            <i class="menu-arrow"></i>
             </a>
+            <div class="collapse" id="withdraw_balance">
+            <ul class="nav flex-column sub-menu">
+                <li class="nav-item"> <a class="nav-link" href="<?= base_url('wallet_withdraw') ?>">Wallet Withdraw</a></li>
+                <li class="nav-item"> <a class="nav-link" href="<?= base_url('withdraw_report') ?>">Withdraw Request</a></li>            
+            </ul>
+            </div>
           </li>
         </ul>
       </nav>
@@ -320,7 +284,7 @@ $data = getuserdata();
                     </div>
                   </a>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item preview-item">
+                  <a class="dropdown-item preview-item" href="<?= base_url('logout') ?>">
                     <div class="preview-thumbnail">
                       <div class="preview-icon bg-dark rounded-circle">
                         <i class="mdi mdi-logout text-danger"></i>

@@ -150,7 +150,7 @@
                     <small class="error-message text-danger" id="password_error"></small>
                   </div>
                   <div class="text-center">
-                    <button type="button" class="btn btn-primary btn-block enter-btn" id="register_btn">Register</button>
+                    <button type="submit" class="btn btn-primary btn-block enter-btn" id="register_btn">Register</button>
                   </div>
                   <p class="sign-up text-center">Already have an Account?<a href="<?= base_url('login') ?>"> Sign In</a></p>
                 </form>
@@ -239,6 +239,7 @@
             });
 
             $('#register_form').submit(function(e) {
+                console.log('test');
                 e.preventDefault();
 
                 if (!validateForm()) {

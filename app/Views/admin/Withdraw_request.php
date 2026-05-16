@@ -328,7 +328,7 @@ $data = getuserdata();
     <div class="main-panel">
         <div class="content-wrapper">
             <div class="row">
-                <table id="usersTable" class="display" style="width:100%">
+                <table id="user_transaction_tbl" class="display" style="width:100%">
                 </table>
                 <div id="edit_div"></div>
             </div>
@@ -342,6 +342,7 @@ $data = getuserdata();
     </div>
     </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <!-- Flatpickr Datepicker CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -349,25 +350,26 @@ $data = getuserdata();
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script>
     $(document).ready(function() { 
-        $('#usersTable').DataTable({
+        var table =   $('#user_transaction_tbl').DataTable({
             processing: true,
             serverSide: false, 
             
             ajax: {
-                url: "<?= site_url('admin/get_user_list') ?>",
+                url: "<?= site_url('user/withdraw_history_tbl') ?>",
                 type: "GET",
                 dataSrc: function(json) {
                     console.log('API Response:', json);
-                    return json.data.users;
+                    return json.data;
                 }
             },
             
             columns: [
+                // 1. Row Index
                 { 
                     data: null,
                     orderable: false,
                     render: function(data, type, row, meta) {
-                        return meta.row + 1; // Row index + 1
+                        return meta.row + 1; 
                     }
                 },
                 
@@ -377,36 +379,33 @@ $data = getuserdata();
                     title: "User ID"
                 },
                 
-                // 3. Sponsor ID (parent_id)
+                // 3. Fund Amount
                 { 
-                    data: "parent_id",
-                    title: "Sponsor ID",
+                    data: "req_amt",
+                    title: "Total Amount",
                     render: function(data) {
-                        return data ? data : '<span class="text-muted">None</span>';
+                        return data ? '₹' + data : '<span class="text-muted">None</span>';
                     }
                 },
                 
-                // 4. Name (username)
+                // 4. UTR (👉 FIXED: Changed uppercase UTR to lowercase utr)
                 { 
-                    data: "username",
-                    title: "Name"
+                    data: "charged_amt",
+                    title: "Service charge"
+                },
+
+                // 5. Portal Txn ID
+                {
+                    data: "paid_amt",
+                    title: "Net Amount"
                 },
                 
-                // 5. Mobile Number (phone)
-                { 
-                    data: "phone",
-                    title: "Mobile Number",
-                    render: function(data) {
-                        return '<a href="tel:' + data + '">' + data + '</a>';
-                    }
-                },
-                
-                // 6. Registration Date (created_at)
+                // 6. Date
                 { 
                     data: "created_at",
-                    title: "Reg. Date",
+                    title: "Date",
                     render: function(data) {
-                        // Format date: 2026-05-09 09:49:35 → 09 May 2026
+                        if (!data) return '-';
                         var date = new Date(data);
                         return date.toLocaleDateString('en-GB', {
                             day: '2-digit',
@@ -418,31 +417,33 @@ $data = getuserdata();
                     }
                 },
                 
-                // 7. Status
+                // 7. Status (👉 FIXED: Added dynamic background colors for visibility)
                 { 
                     data: "status",
-                    title: "Status",
-                    render: function(data) {
+                    title: "Status / Actions",
+                    render: function(data, type, row) {
+                        // If pending, show Approve / Reject action buttons
+                        if (data === 'pending') {
+                            return `
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-sm btn-success text-white font-weight-bold process-btn me-1" 
+                                        data-id="${row.id}" data-action="approve" data-amt="${row.txn_amt}">
+                                    <i class="mdi mdi-check"></i> Approve
+                                </button>
+                                <button class="btn btn-sm btn-danger text-white font-weight-bold process-btn" 
+                                        data-id="${row.id}" data-action="reject">
+                                    <i class="mdi mdi-close"></i> Reject
+                                </button>
+                            </div>`;
+                        }
                         
-                        return '<span class="badge">' + data + '</span>';
+                        // Otherwise, display status badge
+                        var badgeClass = data === 'approved' ? 'bg-success text-white' : 'bg-danger text-white';
+                        return '<span class="badge ' + badgeClass + '">' + data.toUpperCase() + '</span>';
                     }
                 },
-                
-                // 8. Edit/Actions
-                { 
-                    data: "id",
-                    title: "Actions",
-                    orderable: false,
-                    render: function(data, type, row) {
-                        return `<button 
-                            class="btn btn-sm btn-primary me-1 edit-user-btn"
-                            data-id="${row.id}"
-                            data-user-id="${row.user_id}">
-                            Edit
-                        </button>`;
-                    }
-                }
             ],
+
             buttons: [
                 {
                     extend: 'csv',
@@ -473,6 +474,53 @@ $data = getuserdata();
                     previous: "Previous"
                 }
             }
+        });
+
+        $('#user_transaction_tbl').on('click', '.process-btn', function () {
+            var txnId  = $(this).data('id');
+            var action = $(this).data('action'); // approve or reject
+            var amount = $(this).data('amt') || 0;
+            var btn    = $(this);
+
+            var confirmMsg = action === 'approve'
+                ? 'Are you sure you want to APPROVE this withdrawal request of ₹' + amount + '?'
+                : 'Are you sure you want to REJECT this withdrawal request?';
+
+            if (!confirm(confirmMsg)) {
+                return;
+            }
+
+            // Disable all buttons in the same row
+            var btnGroup = btn.closest('.btn-group');
+            btnGroup.find('button').prop('disabled', true);
+
+            // Show loading spinner on clicked button
+            btn.html('<i class="mdi mdi-loading mdi-spin"></i> Processing...');
+
+            $.ajax({
+                url: "<?= site_url('admin/process_withdraw_request') ?>",
+                type: "POST",
+                data: {
+                    txn_id: txnId,
+                    action: action,
+                    <?= csrf_token() ?>: '<?= csrf_hash() ?>'
+                },
+                dataType: "json",
+                success: function (response) {
+                    if (response.Resp_code === 'RCS') {
+                        alert('✅ ' + response.Resp_desc);
+                    } else {
+                        alert('❌ ' + response.Resp_desc);
+                    }
+
+                    // Reload DataTable without resetting pagination
+                    table.ajax.reload(null, false);
+                },
+                error: function () {
+                    alert('❌ A server error occurred. Please try again.');
+                    table.ajax.reload(null, false);
+                }
+            });
         });
     });
 </script>

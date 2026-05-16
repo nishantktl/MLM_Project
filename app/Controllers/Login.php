@@ -21,7 +21,7 @@ class Login extends BaseController
         return view('Login');
     }
 
-    public function submit()
+    public function user_sign_in()
     {
         $data = [
             'Resp_code' => 'ERR',
@@ -69,7 +69,7 @@ class Login extends BaseController
         }
 
         // Verify password
-        if (md5($password) !== $user['password']) {
+        if (!password_verify($password, $user['hash_password'])) {
             $data['Resp_code'] = 'ERR';
             $data['Resp_desc'] = 'Invalid password';
             $data['data'] = [];

@@ -11,7 +11,7 @@ class UserModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
-    protected $allowedFields = ['user_id', 'username', 'phone', 'email', 'password', 'status', 'txn_pin', 'created_at', 'created_by', 'updated_at', 'updated_by','parent_id','dob','gender', 'address', 'city', 'state', 'pincode'];
+    protected $allowedFields = ['user_id', 'username', 'phone', 'email', 'password','hash_password', 'status', 'txn_pin', 'created_at', 'created_by', 'updated_at', 'updated_by','parent_id','dob','gender', 'address', 'city', 'state', 'pincode'];
     protected $useTimestamps = true;
     protected $createdField = 'created_at';
     protected $updatedField = '';
@@ -93,7 +93,7 @@ class UserModel extends Model
 
             if (!$walletModel->insert([
                 'user_id'            => $userData['user_id'],
-                'deposit_balance'    => 50.00,
+                'income_balance'    => 50.00,
                 'withdrawal_balance' => 0.00,
                 'created_by'         => $userData['created_by']
             ])) {
