@@ -93,6 +93,14 @@ class User extends BaseController
                 $amount = $this->request->getPost('fund_amount');
                 $utr    = $this->request->getPost('utr');
 
+                if ($amount < 1000) {
+                    return $this->response->setJSON([
+                        'Resp_code' => 'ERR',
+                        'Resp_desc' => 'Please enter amount greater than 1000.',
+                        'data'      => [],
+                        'csrf_hash' => csrf_hash()
+                    ]);
+                }
                 // 👉 Calls our custom Model method to generate unique ID and save data safely
                 $generated_portal_id = $txnModel->createSecureTransaction($user_id, $amount, $utr);
 
@@ -338,7 +346,7 @@ class User extends BaseController
 
         $loggedInUserId   = session()->get('user_id');
         $memberId         = trim($this->request->getPost('member_id'));
-        // $investmentAmount = (float) $this->request->getPost('investment_amount');
+
         $packageKey     = trim($this->request->getPost('investment_amount'));
         $actionType = trim($this->request->getPost('action_type'));
 
@@ -497,9 +505,10 @@ class User extends BaseController
         $response['Resp_desc'] = 'Investment transferred successfully.';
         $response['data'] = [
             'member_id'         => $memberId,
-            'member_name'       => $member['name'] ?? '',
+            'member_name'       => $member['username'] ?? '',
             'investment_amount' => $investmentAmount,
-            'remaining_balance' => $fromBalanceAfter
+            'remaining_balance' => $fromBalanceAfter,
+            'package' => $packages[$packageKey]
         ];
 
         return $this->response->setJSON($response);
@@ -967,5 +976,16 @@ class User extends BaseController
             return redirect()->to('/login');
         }
         
+    }
+
+    public function referral($referralId = '')
+    {
+        $data = [];
+
+        // Pass referral ID to view
+        $data['referral_id'] = trim($referralId);
+        $data['title'] = 'Referral register link';
+
+        return view('referral_register', $data);
     }
 }

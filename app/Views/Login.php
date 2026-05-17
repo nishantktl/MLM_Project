@@ -21,11 +21,11 @@
                 <div class="alert alert-danger d-none" id="form_error_alert"></div>
                 <form>
                   <div class="form-group">
-                    <label>Email *</label>
-                    <input type="email" class="form-control p_input" id="email"
+                    <label>User ID / Username *</label>
+                    <input type="text" class="form-control p_input" id="login_id"
                         style="background-color: #2A3038; color: #ffffff; opacity: 1;"
-                    >
-                    <div class="error-message" id="email_error"></div>
+                        placeholder="Enter User ID or Username">
+                    <div class="error-message" id="login_id_error"></div>
                   </div>
                   <div class="form-group">
                     <label>Password *</label>
@@ -74,16 +74,13 @@
 
             function validateForm() {
                 clearErrors();
-                var email = $('#email').val().trim();
+
+                var loginId = $('#login_id').val().trim();
                 var password = $('#password').val();
                 var valid = true;
-                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;              
-                  
-                if (email === '') {
-                    $('#email_error').text('Email is required');
-                    valid = false;
-                } else if (!emailRegex.test(email)) {
-                    $('#email_error').text('Email is not valid');
+
+                if (loginId === '') {
+                    $('#login_id_error').text('User ID or Username is required');
                     valid = false;
                 }
 
@@ -98,7 +95,7 @@
                 return valid;
             }
 
-            $(' #email, #password').on('input change', function() {
+            $('#login_id, #password').on('input change', function() {
                 $(this).closest('.form-group').find('.error-message').text('');
             });
 
@@ -110,7 +107,7 @@
                 }
 
                 var params = {
-                    email: $('#email').val().trim(),
+                    login_id: $('#login_id').val().trim(),
                     password: $('#password').val(),
                 };
 

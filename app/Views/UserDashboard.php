@@ -1,5 +1,6 @@
 <?php
 $data = getuserdata();
+$referralLink = base_url('referral/' . session()->get('user_id'));
 ?>
     <div class="container-scroller">
       <?= $this->include('user/layout/sidebar') ?>
@@ -118,6 +119,31 @@ $data = getuserdata();
                   </div>
                 </div>
               </div>
+              <div class="col-xl-3 col-sm-6 grid-margin stretch-card">
+                <div class="form-group">
+                  <label>Your Referral Link</label>
+                  <div class="input-group">
+                      <input type="text"
+                            class="form-control"
+                            id="referral_link"
+                            value="<?= $referralLink ?>"
+                            readonly
+                            style="
+                                background-color: #2A3038;
+                                color: #ffffff;
+                                opacity: 1;
+                                font-weight: 600;
+                                -webkit-text-fill-color: #ffffff;
+                                cursor: not-allowed;
+                            ">
+                      <div class="input-group-append">
+                          <button type="button" class="btn btn-primary" onclick="copyReferralLink()">
+                              Copy
+                          </button>
+                      </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <footer class="footer">
@@ -129,3 +155,13 @@ $data = getuserdata();
         </div>
       </div>
     </div>
+
+    <script>
+function copyReferralLink() {
+    var copyText = document.getElementById('referral_link');
+    copyText.select();
+    copyText.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    alert('Referral link copied successfully.');
+}
+</script>

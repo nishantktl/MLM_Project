@@ -60,7 +60,7 @@ $data = getuserdata();
                 <div class="row">
                     <table id="usersTable" class="display" style="width:100%">
                     </table>
-                    <div id="edit_div"></div>
+                    <div id="edit_div" style="display:none"></div>
                 </div>
             </div>
             <footer class="footer">
@@ -203,6 +203,239 @@ $data = getuserdata();
                     previous: "Previous"
                 }
             }
+        });
+
+        // Edit button click
+        $('#usersTable').on('click', '.edit-user-btn', function () {
+            var userId = $(this).data('user-id');
+
+            $.ajax({
+                url: "<?= site_url('admin/get_user_details') ?>",
+                type: "GET",
+                data: {
+                    user_id: userId
+                },
+                dataType: "json",
+                success: function(response) {
+                    if (response.Resp_code === 'RCS') {
+                        var user = response.data;
+
+                        function formatDateForInput(dateString) {
+                            if (!dateString) return '';
+
+                            // If stored as YYYY-MM-DD or YYYY-MM-DD HH:MM:SS
+                            if (dateString.includes('-')) {
+                                return dateString.substring(0, 10);
+                            }
+
+                            // If stored as MM/DD/YYYY
+                            let parts = dateString.split('/');
+                            if (parts.length === 3) {
+                                return parts[2] + '-' + parts[0].padStart(2, '0') + '-' + parts[1].padStart(2, '0');
+                            }
+
+                            return '';
+                        }
+                        var html = `
+                        <form id="edit_user_form">
+                            <input type="hidden" name="<?= csrf_token() ?>" value="<?= csrf_hash() ?>">
+                            <input type="hidden" name="id" value="${user.id}">
+
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>User ID</label>
+                                        <input type="text"
+                                            class="form-control"
+                                            value="${user.user_id || ''}"
+                                            disabled  style="background-color: #2A3038; color: #ffffff; opacity: 1;">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Sponsor ID</label>
+                                        <input type="text"
+                                            class="form-control"
+                                            value="${user.parent_id || ''}"
+                                            disabled  style="background-color: #2A3038; color: #ffffff; opacity: 1;">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Under Sponsor ID</label>
+                                        <input type="text"
+                                            name="under_sponsor_id"
+                                            class="form-control"
+                                            value="${user.parent_id || ''}">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Name</label>
+                                        <input type="text"
+                                            name="username"
+                                            class="form-control"
+                                            value="${user.username || ''}">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Father Name</label>
+                                        <input type="text"
+                                            name="father_name"
+                                            class="form-control"
+                                            value="${user.father_name || ''}">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Password</label>
+                                        <input type="text"
+                                            name="password"
+                                            class="form-control"
+                                            value="${user.password || ''}">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Mobile No.</label>
+                                        <input type="text"
+                                            name="phone"
+                                            class="form-control"
+                                            value="${user.phone || ''}">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input type="email"
+                                            name="email"
+                                            class="form-control"
+                                            value="${user.email || ''}">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Date Of Birth</label>
+                                        <input type="date"
+                                            name="dob"
+                                            class="form-control"
+                                            value="${user.dob ? formatDateForInput(user.dob) : ''}">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Gender</label>
+                                        <select name="gender" class="form-control">
+                                            <option value="Male" ${user.gender === 'Male' ? 'selected' : ''}>Male</option>
+                                            <option value="Female" ${user.gender === 'Female' ? 'selected' : ''}>Female</option>
+                                            <option value="Other" ${user.gender === 'Other' ? 'selected' : ''}>Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Address</label>
+                                        <textarea name="address"
+                                                class="form-control"
+                                                rows="4">${user.address || ''}</textarea>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>City</label>
+                                        <input type="text"
+                                            name="city"
+                                            class="form-control"
+                                            value="${user.city || ''}">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>State</label>
+                                        <input type="text"
+                                            name="state"
+                                            class="form-control"
+                                            value="${user.state || ''}">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Pincode</label>
+                                        <input type="text"
+                                            name="pincode"
+                                            class="form-control"
+                                            value="${user.pincode || ''}">
+                                    </div>
+                                </div>
+
+                                <div class="col-12 mt-3">
+                                    <button type="submit" class="btn btn-success">
+                                        Update User
+                                    </button>
+                                   <button type="button" class="btn btn-secondary" id="backtotbl">
+                                        Cancel
+                                    </button>
+                                </div>
+
+                            </div>
+                        </form>
+                        `;
+
+                        $('#edit_div').html(html).show();
+                        $('#usersTable_wrapper').hide();
+
+                        $('#backtotbl').click(function(e){
+                            e.preventDefault();
+                            $('#edit_div').html('').hide();
+                            $('#usersTable_wrapper').show();
+                        })
+                        $('html, body').animate({
+                            scrollTop: $('#edit_div').offset().top - 50
+                        }, 500);
+                    } else {
+                        alert(response.Resp_desc);
+                    }
+                }
+            });
+        });
+
+        // Update user form submit
+        $(document).on('submit', '#edit_user_form', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: "<?= site_url('admin/update_user_details') ?>",
+                type: "POST",
+                data: $(this).serialize(),
+                dataType: "json",
+                success: function (response) {
+                    if (response.Resp_code === 'RCS') {
+                        alert(response.Resp_desc);
+                        $('#backtotbl').trigger('click');
+                        $('#usersTable').DataTable().ajax.reload(null, false);
+                    } else {
+                        alert(response.Resp_desc);
+                    }
+                },
+                error: function () {
+                    alert('Failed to update user.');
+                }
+            });
         });
     });
 </script>

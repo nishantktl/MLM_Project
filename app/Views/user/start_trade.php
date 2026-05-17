@@ -336,10 +336,17 @@ $(document).ready(function() {
                 if (response.Resp_code === 'SUCCESS') {
 
                     // Success banner
+                    var successHtml = `
+                        <strong>${response.Resp_desc}</strong><br>
+                        <b>Member ID:</b> ${response.data.member_id}<br>
+                        <b>Member Name:</b> ${response.data.member_name}<br>
+                        <b>Package:</b> ${response.data.package[1]}<br>
+                    `;
+
                     $('#investment_success_banner')
-                        .removeClass('d-none')
+                        .removeClass('d-none alert-danger')
                         .addClass('alert-success')
-                        .text(response.Resp_desc);
+                        .html(successHtml);
 
                     // Update wallet fund field
                     if (response.data.remaining_balance !== undefined) {

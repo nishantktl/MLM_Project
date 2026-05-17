@@ -29,33 +29,36 @@ class Login extends BaseController
             'data' => []
         ];
 
-        $email = trim($this->request->getPost('email'));
-        $password = $this->request->getPost('password');
+        $params = $this->request->getPost();
 
-        // Validate input
-        if (empty($email) || empty($password)) {
-            $data['Resp_code'] = 'ERR';
-            $data['Resp_desc'] = 'Email and password are required';
-            $data['data'] = [];
-            return $this->response->setJSON($data)->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
-        }
+        $params['login_id'] = isset($params['login_id'])
+            ? trim($params['login_id'])
+            : '';
 
-        // Validate email format
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $data['Resp_code'] = 'ERR';
-            $data['Resp_desc'] = 'Invalid email format';
-            $data['data'] = [];
-            return $this->response->setJSON($data)->setStatusCode(ResponseInterface::HTTP_BAD_REQUEST);
+        $params['password'] = isset($params['password'])
+            ? $params['password']
+            : '';
+
+        if ($params['login_id'] === '' || $params['password'] === '') {
+            $data['Resp_desc'] = 'User ID/Username and password are required.';
+            return $this->response->setJSON($data);
         }
 
         $userModel = new \App\Models\UserModel();
         
         // Get user by email
-        $user = $userModel->getUserByEmail($email);
+        $loginId = trim($params['login_id']);
+
+        $user = $userModel
+            ->groupStart()
+                ->where('user_id', $loginId)
+                ->orWhere('username', $loginId)
+            ->groupEnd()
+            ->first();
 
         if (!$user) {
             $data['Resp_code'] = 'ERR';
-            $data['Resp_desc'] = 'User not found';
+            $data['Resp_desc'] = 'Invalid User ID/Username or password.';
             $data['data'] = [];
             return $this->response->setJSON($data)->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
         }
@@ -69,12 +72,11 @@ class Login extends BaseController
         }
 
         // Verify password
-        if (!password_verify($password, $user['hash_password'])) {
-            $data['Resp_code'] = 'ERR';
-            $data['Resp_desc'] = 'Invalid password';
-            $data['data'] = [];
-            return $this->response->setJSON($data)->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
-        }
+        if (!password_verify($params['password'], $user['hash_password'])) {
+        $data['Resp_desc'] = 'Invalid password';
+        return $this->response->setJSON($data)
+            ->setStatusCode(ResponseInterface::HTTP_UNAUTHORIZED);
+    }
 
         session()->set([
             'user_id' => $user['user_id'],

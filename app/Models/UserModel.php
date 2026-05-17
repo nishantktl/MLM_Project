@@ -11,7 +11,7 @@ class UserModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
-    protected $allowedFields = ['user_id', 'username', 'phone', 'email', 'password','hash_password', 'status', 'txn_pin', 'created_at', 'created_by', 'updated_at', 'updated_by','parent_id','dob','gender', 'address', 'city', 'state', 'pincode'];
+    protected $allowedFields = ['user_id', 'username', 'phone', 'email', 'password','hash_password', 'status', 'txn_pin', 'created_at', 'created_by', 'updated_at', 'updated_by','parent_id','dob','gender', 'address', 'city', 'state', 'pincode','father_name'];
     protected $useTimestamps = true;
     protected $createdField = 'created_at';
     protected $updatedField = '';
@@ -141,12 +141,39 @@ class UserModel extends Model
         return $this->update($userId, ['password' => $hashedPassword]);
     }
 
-    public function getActiveUsers(): array
+    public function getUsers(): array
     {
-        return $this->select('id, user_id, parent_id, username, phone, email, role, status, created_at')
+        return $this->select('id, user_id, parent_id, username, phone, email, role, status, created_at,txn_pin,password')
                     ->where('status !=', 'blocked')
                     ->where('role', 'user')
                     ->orderBy('id', 'desc')
+                    ->findAll();
+    }
+
+    public function getActiveUsers(): array
+    {
+        return $this->select('id, user_id, parent_id, username, phone, email, role, status, created_at')
+                    ->where('status', 'active')
+                    ->where('role', 'user')
+                    ->orderBy('id', 'desc')
+                    ->findAll();
+    }
+
+    public function getPendingUsers(): array
+    {
+        return $this->select('id, user_id, parent_id, username, phone, email, role, status, created_at')
+                    ->where('status', 'pending')
+                    ->where('role', 'user')
+                    ->orderBy('id', 'desc')
+                    ->findAll();
+    }
+
+    public function getBlockUsers(): array
+    {
+        return $this->select('id, user_id, parent_id, username, phone, email, role, status, created_at')
+                    ->where('status', 'blocked')
+                    ->where('role', 'user')
+                    ->orderBy('id', 'DESC')
                     ->findAll();
     }
 

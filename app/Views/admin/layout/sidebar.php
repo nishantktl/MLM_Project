@@ -101,5 +101,13 @@
             </ul>
             </div>
         </li>
+        <li class="nav-item menu-items">
+            <a class="nav-link" href="<?= base_url('admin/qr_code') ?>">
+            <span class="menu-icon">
+                <i class="mdi mdi-speedometer"></i>
+            </span>
+            <span class="menu-title">Add Qr Code</span>
+            </a>
+        </li>
     </ul>
 </nav>

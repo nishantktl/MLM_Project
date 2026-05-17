@@ -1,5 +1,6 @@
 <?php
 $data = getuserdata();
+$qr = get_qr_code();
 ?>
 <div class="container-scroller">
   <!-- SIDEBAR -->
@@ -108,10 +109,14 @@ $data = getuserdata();
                 <h6 class="font-weight-bold text-white mb-3">Scan QR / Bank Details</h6>
 
                 <div class="p-2 border rounded bg-dark shadow-sm d-inline-block">
-                  <img src="<?= base_url('assets/images/qr_code.png') ?>" 
-                       alt="QR Code" 
-                       class="img-fluid rounded" 
-                       style="max-height: 180px; width: auto; object-fit: contain;">
+                  <?php if ($qr): ?>
+    <img src="<?= esc($qr['qr_image_url']) ?>"
+         alt="<?= esc($qr['qr_name']) ?>"
+         class="img-fluid rounded"
+         style="max-height: 200px;">
+<?php else: ?>
+    <p>No QR Code available.</p>
+<?php endif; ?>
                 </div>
 
                 <small class="text-light mt-3 d-block font-weight-bold">
@@ -165,6 +170,12 @@ $(document).ready(function() {
 
         if (fundAmount === '' || isNaN(fundAmount) || parseFloat(fundAmount) <= 0) {
             $('#fund_amount_error').html('Please enter a valid amount greater than ₹0.');
+            $('#fund_amount').addClass('is-invalid border-danger');
+            isValid = false;
+        }
+
+        if(parseFloat(fundAmount) <= 1000){
+          $('#fund_amount_error').html('Please enter a amount greater than ₹1000.');
             $('#fund_amount').addClass('is-invalid border-danger');
             isValid = false;
         }
